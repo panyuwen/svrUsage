@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Monitoring</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Server Monitoring (Last 24h)</h2>
+    <canvas id="cpuChart"></canvas>
+    <canvas id="memoryChart"></canvas>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('/data');
+            const data = await response.json();
+            
+            const timestamps = data.map(d => d.timestamp);
+            const cpuUsage = data.map(d => d.cpu_usage);
+            const memoryUsage = data.map(d => d.memory_usage);
+
+            const ctx1 = document.getElementById('cpuChart').getContext('2d');
+            const ctx2 = document.getElementById('memoryChart').getContext('2d');
+
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'CPU Usage (%)',
+                        data: cpuUsage,
+                        borderColor: 'red',
+                        fill: false
+                    }]
+                }
+            });
+
+            new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'Memory Usage (%)',
+                        data: memoryUsage,
+                        borderColor: 'blue',
+                        fill: false
+                    }]
+                }
+            });
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
