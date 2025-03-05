@@ -30,14 +30,14 @@ def create_plot(records):
             cpu = float(cpu)
             memory = float(memory)
 
-            cpu_pos = int((cpu / MAX_VALUE) * WIDTH)
-            mem_pos = int((memory / MAX_VALUE) * WIDTH)
+            # Map values to the plot width, ensuring 100% is inside the plot range
+            cpu_pos = min(int((cpu / MAX_VALUE) * WIDTH), WIDTH - 1)
+            mem_pos = min(int((memory / MAX_VALUE) * WIDTH), WIDTH - 1)
 
+            # Create empty line
             line = [" "] * WIDTH
-            if cpu_pos < WIDTH:
-                line[cpu_pos] = "x"
-            if mem_pos < WIDTH:
-                line[mem_pos] = "o"
+            line[cpu_pos] = "x"  # CPU usage
+            line[mem_pos] = "o"  # Memory usage
 
             plot_lines.append(f"{timestamp[:16]} | " + "".join(line))
         except ValueError:
